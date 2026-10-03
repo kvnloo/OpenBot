@@ -233,6 +233,11 @@ describe("the common coordination tools", () => {
     ).toEqual(["ask_person"]);
   });
 
+  test("does not offer coordination schemas a run cannot execute", async () => {
+    const { coordinator } = tools({ authorised: false });
+    expect(await coordinator.toolsForRun(DELEGATED)).toEqual([]);
+  });
+
   test("executes a handoff with the signed context and reports a revoked grant as an error", async () => {
     const { coordinator, sent } = tools({ granted: false });
     const result = await coordinator.call({
