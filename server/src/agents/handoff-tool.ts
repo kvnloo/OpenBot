@@ -389,6 +389,9 @@ export function createCoordinationTools(options: {
   };
   return {
     async toolsForRun(from: RunAssertion): Promise<GrantedTool[]> {
+      // Do not advertise a capability this exact signed run cannot invoke. Execution checks the
+      // same authority again because the lease/grant can change after schemas are fetched.
+      if (!(await options.authoriseRun(from))) return [];
       const canHandOn =
         options.caps.maxDepth > 0 &&
         options.caps.maxPerRun > 0 &&
